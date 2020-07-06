@@ -18,8 +18,15 @@ export const SearchForm = styled.form`
   }
 `;
 
+export const CurrentMain = styled.main`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const CurrentHeader = styled.header`
   height: 300px;
+  width: 100%;
 `;
 
 export const CurrentTitle = styled.div`
@@ -33,6 +40,12 @@ export const CurrentForecast = styled.h1`
 
 export const ForecastFrame = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  margin: 30px;
+  padding: 30px;
+
+  > * {
+    margin: 15px;
+  }
 `;

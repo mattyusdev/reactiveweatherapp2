@@ -2,8 +2,9 @@ import {
   FETCH_STARTED,
   FETCH_SUCCESS,
   FETCH_FAILED,
-  SET_CORRENT_WEATHER,
+  SET_CURRENT_WEATHER,
   SET_FORECAST_WEATHER,
+  SET_CURRENT_CITY,
 } from "./types";
 
 export const fetchStarted = () => {
@@ -18,10 +19,14 @@ export const fetchFailed = () => {
   return { type: FETCH_FAILED };
 };
 
-export const setCorrentWeather = (correntWeather) => {
-  return { type: SET_CORRENT_WEATHER, payload: correntWeather };
+export const setCurrentWeather = (currentWeather) => {
+  return { type: SET_CURRENT_WEATHER, payload: currentWeather };
 };
 
 export const setForecastWeather = (forecastWeather) => {
   return { type: SET_FORECAST_WEATHER, payload: forecastWeather };
+};
+
+export const setCurrentCity = (cityKey) => {
+  return { type: SET_CURRENT_CITY, payload: cityKey };
 };

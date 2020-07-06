@@ -2,19 +2,22 @@ import {
   FETCH_STARTED,
   FETCH_SUCCESS,
   FETCH_FAILED,
-  SET_CORRENT_WEATHER,
+  SET_CURRENT_WEATHER,
   SET_FORECAST_WEATHER,
+  SET_CURRENT_CITY,
 } from "./types";
 
 const initalState = {
-  correntCity: {
+  currentCity: {
     key: "215854",
-    correntWeather: {},
+    name: "Tel Aviv",
+    ID: "TA",
+    currentWeather: {},
     forecastWeather: [],
   },
   favoriteCities: [],
   fetch: {
-    loading: false,
+    loading: true,
     error: false,
   },
 };
@@ -30,15 +33,21 @@ export const weatherReducer = (state = initalState, action) => {
         ...state,
         fetch: { ...state.fetch, loading: false, error: true },
       };
-    case SET_CORRENT_WEATHER:
+    case SET_CURRENT_WEATHER:
       return {
         ...state,
-        correntCity: { ...state.correntCity, correntWeather: action.payload },
+        currentCity: { ...state.currentCity, currentWeather: action.payload },
       };
     case SET_FORECAST_WEATHER:
       return {
         ...state,
-        correntCity: { ...state.correntCity, forecastWeather: action.payload },
+        currentCity: { ...state.currentCity, forecastWeather: action.payload },
+      };
+    case SET_CURRENT_CITY:
+      const { key, name, ID } = action.payload;
+      return {
+        ...state,
+        currentCity: { ...state.currentCity, key, name, ID },
       };
     default:
       return { ...state };

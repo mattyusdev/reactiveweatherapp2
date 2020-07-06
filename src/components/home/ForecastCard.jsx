@@ -1,10 +1,9 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import daysOfWeek from "../../data/daysOfWeek";
 
 const useStyles = makeStyles({
   root: {
@@ -23,25 +22,46 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ForecastCard() {
+export default function ForecastCard({ foreCastData }) {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
+
+  const { Date: ForeCastDate, Temperature, Day, Night } = foreCastData;
+
+  const dayName = daysOfWeek[new Date(ForeCastDate).getDay()];
 
   return (
     <Card className={classes.root}>
+      <CardContent>
+        <Typography variant="h5" component="h3">
+          {dayName}
+        </Typography>
+        <Typography variant="h5" component="h2">
+          {Temperature &&
+            `${Temperature.Minimum.Value}°${Temperature.Minimum.Unit} - ${Temperature.Maximum.Value}°${Temperature.Maximum.Unit}`}
+        </Typography>
+      </CardContent>
       <CardContent>
         <Typography
           className={classes.title}
           color="textSecondary"
           gutterBottom
         >
-          22.4.20
+          Day
         </Typography>
         <Typography variant="h5" component="h2">
-          Sun
+          {Day && Day.IconPhrase}
         </Typography>
-        <Typography variant="h4" component="h2">
-          38°c
+      </CardContent>
+      <CardContent>
+        <Typography
+          className={classes.title}
+          color="textSecondary"
+          gutterBottom
+        >
+          Night
+        </Typography>
+        <Typography variant="h5" component="h2">
+          {Night && Night.IconPhrase}
         </Typography>
       </CardContent>
       {/* <CardActions>
