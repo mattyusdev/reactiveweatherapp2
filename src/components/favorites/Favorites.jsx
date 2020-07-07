@@ -1,9 +1,16 @@
 import React from "react";
+import FavoriteCard from "./FavoriteCard";
+import { FavoritesMain } from "../../styles/favoritesStyles";
+import { useSelector } from "react-redux";
 
-export default function Favorites() {
+export default function Favorites({ history }) {
+  const { favoriteCities } = useSelector((state) => state);
+
   return (
-    <div>
-      <h1>Favorites</h1>
-    </div>
+    <FavoritesMain>
+      {favoriteCities.map((city) => (
+        <FavoriteCard data={city} history={history} />
+      ))}
+    </FavoritesMain>
   );
 }

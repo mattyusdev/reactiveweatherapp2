@@ -1,61 +1,52 @@
 import React, { useEffect } from "react";
 import {
-  SearchFrame,
-  SearchForm,
   CurrentHeader,
   CurrentTitle,
   CurrentForecast,
   ForecastFrame,
   CurrentMain,
 } from "../../styles/homeStyles";
-import {
-  TextField,
-  Button,
-  IconButton,
-  CircularProgress,
-} from "@material-ui/core";
-import { AiFillHeart } from "react-icons/ai";
+import { IconButton, CircularProgress } from "@material-ui/core";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import ForecastCard from "./ForecastCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentCityData } from "../../redux/asyncActions";
-import { setCurrentCity } from "../../redux/actions";
+import SearchBar from "../SearchBar";
+import { addToFavorites, removeFromFavorites } from "../../redux/actions";
 
-export default function Home() {
-  const { currentCity, fetch } = useSelector((state) => state);
+export default function Home({ history }) {
+  const { currentCity, fetch, favoriteCities } = useSelector((state) => state);
   const dispatch = useDispatch();
-
   const { currentWeather, name, ID, key, forecastWeather } = currentCity;
+
+  const isFavorites = favoriteCities.some((city) => city.key === key);
+  const favoriteCityObject = { name, ID, key, loading: true, error: false };
 
   useEffect(() => {
     dispatch(getCurrentCityData(key));
   }, [key]);
 
-  const setCity = () => {
-    dispatch(
-      setCurrentCity({
-        key: 28143,
-        name: "Dhaka",
-        ID: "C",
-      })
-    );
+  const favoritesClickHandler = (cityData, isInFavorites) => {
+    if (isInFavorites) {
+      dispatch(removeFromFavorites(cityData.key));
+      localStorage.setItem(
+        "favorites",
+        JSON.stringify(
+          favoriteCities.filter((city) => city.key !== cityData.key)
+        )
+      );
+    } else {
+      dispatch(addToFavorites(cityData));
+      localStorage.setItem(
+        "favorites",
+        JSON.stringify([...favoriteCities, cityData])
+      );
+    }
   };
 
   return (
     <div>
-      <SearchFrame>
-        <SearchForm>
-          <TextField label="Search..." />
-          <Button
-            type="button"
-            onClick={setCity}
-            variant="contained"
-            disableElevation
-            color="secondary"
-          >
-            GO
-          </Button>
-        </SearchForm>
-      </SearchFrame>
+      <SearchBar history={history} />
 
       <CurrentMain>
         {fetch.loading ? (
@@ -75,8 +66,13 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <IconButton color="secondary">
-                    <AiFillHeart />
+                  <IconButton
+                    color={isFavorites ? "secondary" : "inherit"}
+                    onClick={() =>
+                      favoritesClickHandler(favoriteCityObject, isFavorites)
+                    }
+                  >
+                    {isFavorites ? <AiFillHeart /> : <AiOutlineHeart />}
                   </IconButton>
                 </div>
               </CurrentTitle>
