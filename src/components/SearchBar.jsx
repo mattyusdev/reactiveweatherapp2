@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { SearchFrame, SearchForm } from "../styles/homeStyles";
-import { TextField, Button } from "@material-ui/core";
+import { SearchFrame, SearchForm } from "../styles/globals/searchBarStyles";
+import { TextField } from "@material-ui/core";
+import { PrimaryButton } from "../styles/globals/buttonStyles";
 
 export default function SearchBar({ text, history }) {
   const [formData, setFormData] = useState(text ? text : "");
@@ -19,14 +20,14 @@ export default function SearchBar({ text, history }) {
           onChange={(e) => setFormData(e.target.value)}
         />
 
-        <Button
+        <PrimaryButton
           type="submit"
           variant="contained"
           disableElevation
           color="secondary"
         >
           GO
-        </Button>
+        </PrimaryButton>
       </SearchForm>
     </SearchFrame>
   );

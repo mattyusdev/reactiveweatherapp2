@@ -1,52 +1,61 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 import { Link, useLocation } from "react-router-dom";
+import {
+  CustomAppBar,
+  ToolBarSpacer,
+  ToolBarLogoText,
+  ToolBarLogoIcon,
+  NavLinksFrame,
+  NavLinksLi,
+  NavHamburger,
+} from "../styles/globals/navStyles";
+import { PrimaryButton } from "../styles/globals/buttonStyles";
+import { RiMenu4Line, RiCloseLine } from "react-icons/ri";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
-
-export default function Navbar() {
-  const classes = useStyles();
+export default function Navbar({ isNavOpen, setIsNavOpen }) {
   const location = useLocation().pathname;
 
   return (
-    <AppBar position="static" component="nav">
+    <CustomAppBar position="static" color="inherit" component="nav">
       <Toolbar>
-        <Typography variant="h6" className={classes.title}>
-          Herolo Weather App
-        </Typography>
-        <Button
-          component={Link}
-          to="/"
-          variant="contained"
-          disableElevation
-          color={location !== "/" ? "primary" : "secondary"}
-        >
-          Home
-        </Button>
-        <Button
-          component={Link}
-          to="/favorites"
-          variant="contained"
-          disableElevation
-          color={location !== "/favorites" ? "primary" : "secondary"}
-        >
-          Favorites ❤
-        </Button>
+        <ToolBarLogoIcon />
+        <ToolBarLogoText>WeatherApp</ToolBarLogoText>
+        <ToolBarSpacer />
+        <NavLinksFrame isNavOpen={isNavOpen}>
+          <NavLinksLi>
+            <PrimaryButton
+              component={Link}
+              nav={true}
+              to="/"
+              variant="contained"
+              disableElevation
+              onClick={() => setIsNavOpen(false)}
+              color={location !== "/" ? "inherit" : "secondary"}
+            >
+              Home
+            </PrimaryButton>
+          </NavLinksLi>
+
+          <NavLinksLi>
+            <PrimaryButton
+              component={Link}
+              nav={true}
+              to="/favorites"
+              variant="contained"
+              disableElevation
+              onClick={() => setIsNavOpen(false)}
+              color={location !== "/favorites" ? "inherit" : "secondary"}
+            >
+              Favorites ❤
+            </PrimaryButton>
+          </NavLinksLi>
+        </NavLinksFrame>
+
+        <NavHamburger onClick={() => setIsNavOpen((prevState) => !prevState)}>
+          {!isNavOpen ? <RiMenu4Line /> : <RiCloseLine />}
+        </NavHamburger>
       </Toolbar>
-    </AppBar>
+    </CustomAppBar>
   );
 }

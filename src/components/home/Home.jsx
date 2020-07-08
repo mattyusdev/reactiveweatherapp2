@@ -1,23 +1,28 @@
 import React, { useEffect } from "react";
+import { ForecastFrame, CurrentMain } from "../../styles/pages/homeStyles";
 import {
   CurrentHeader,
-  CurrentTitle,
   CurrentForecast,
-  ForecastFrame,
-  CurrentMain,
-} from "../../styles/homeStyles";
-import { IconButton, CircularProgress } from "@material-ui/core";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+  CurrentCityText,
+  CurrentCountryText,
+  CurrentInfoFrame,
+  CurrentTemperature,
+  CurrentWeatherIcon,
+} from "../../styles/globals/currentWeatherStyles";
+import { CircularProgress } from "@material-ui/core";
 import ForecastCard from "./ForecastCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentCityData } from "../../redux/asyncActions";
 import SearchBar from "../SearchBar";
 import { addToFavorites, removeFromFavorites } from "../../redux/actions";
+import { PrimaryButton } from "../../styles/globals/buttonStyles";
+import getWeatherStyle from "../../utils/functions/getWeatherIcon";
 
 export default function Home({ history }) {
   const { currentCity, fetch, favoriteCities } = useSelector((state) => state);
   const dispatch = useDispatch();
   const { currentWeather, name, ID, key, forecastWeather } = currentCity;
+  const weatherStyle = getWeatherStyle(currentWeather.WeatherIcon);
 
   const isFavorites = favoriteCities.some((city) => city.key === key);
   const favoriteCityObject = { name, ID, key, loading: true, error: false };
@@ -45,7 +50,7 @@ export default function Home({ history }) {
   };
 
   return (
-    <div>
+    <>
       <SearchBar history={history} />
 
       <CurrentMain>
@@ -53,29 +58,33 @@ export default function Home({ history }) {
           <CircularProgress color="secondary" />
         ) : !fetch.error ? (
           <>
-            <CurrentHeader>
-              <CurrentTitle>
-                <div>
-                  <h3>
-                    {name} ({ID})
-                  </h3>
-                  <h2>
-                    {currentWeather.Temperature &&
-                      `${currentWeather.Temperature.Metric.Value}°${currentWeather.Temperature.Metric.Unit}`}
-                  </h2>
-                </div>
+            <CurrentHeader backgroundColor={weatherStyle.backgroundColor}>
+              <CurrentCityText>
+                {name} ({ID})
+              </CurrentCityText>
+              <CurrentCountryText>Israel</CurrentCountryText>
 
-                <div>
-                  <IconButton
-                    color={isFavorites ? "secondary" : "inherit"}
-                    onClick={() =>
-                      favoritesClickHandler(favoriteCityObject, isFavorites)
-                    }
-                  >
-                    {isFavorites ? <AiFillHeart /> : <AiOutlineHeart />}
-                  </IconButton>
-                </div>
-              </CurrentTitle>
+              <CurrentInfoFrame>
+                <CurrentTemperature>
+                  {currentWeather.Temperature &&
+                    `${currentWeather.Temperature.Metric.Value}° ${currentWeather.Temperature.Metric.Unit}`}
+                </CurrentTemperature>
+
+                <CurrentWeatherIcon color={weatherStyle.iconColor}>
+                  <weatherStyle.Icon />
+                </CurrentWeatherIcon>
+
+                <PrimaryButton
+                  variant={isFavorites ? "contained" : "outlined"}
+                  disableElevation
+                  color={isFavorites ? "secondary" : "inherit"}
+                  onClick={() =>
+                    favoritesClickHandler(favoriteCityObject, isFavorites)
+                  }
+                >
+                  {isFavorites ? "Favorite ❤" : "Add favorite"}
+                </PrimaryButton>
+              </CurrentInfoFrame>
 
               <CurrentForecast>{currentWeather.WeatherText}</CurrentForecast>
             </CurrentHeader>
@@ -89,6 +98,6 @@ export default function Home({ history }) {
           <h1>Error! please try again later.</h1>
         )}
       </CurrentMain>
-    </div>
+    </>
   );
 }

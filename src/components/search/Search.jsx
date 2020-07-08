@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { searchCity } from "../../redux/asyncActions";
 import SearchResults from "./SearchResults";
 import { CircularProgress } from "@material-ui/core";
-import { CurrentMain } from "../../styles/homeStyles";
+import { CurrentMain } from "../../styles/pages/homeStyles";
 
 export default function Search({ match, history }) {
   const { searchResults, fetch } = useSelector((state) => state);
@@ -18,7 +18,6 @@ export default function Search({ match, history }) {
   return (
     <div>
       <SearchBar text={searchText} history={history} />
-      {/* ***************************** */}
       <CurrentMain>
         {fetch.loading ? (
           <CircularProgress color="secondary" />
