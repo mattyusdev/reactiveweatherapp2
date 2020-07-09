@@ -6,13 +6,20 @@ import { device } from "../responsive";
 export const CustomAppBar = styled(AppBar)`
   && {
     box-shadow: 0px 3px 21px -6px rgba(0, 0, 0, 0.3);
+    padding: 0 2rem;
+    position: relative;
+
+    ${(props) =>
+      props.theme &&
+      css`
+        background: ${props.theme.background};
+      `}
   }
-  padding: 0 2rem;
 
   @media ${device.mobileL} {
-    padding: 0;
-
     && {
+      padding: 0;
+
       box-shadow: 0px 3px 15px -8px rgba(0, 0, 0, 0.3);
     }
   }
@@ -20,9 +27,14 @@ export const CustomAppBar = styled(AppBar)`
 
 export const ToolBarLogoIcon = styled(IoMdSunny)`
   font-size: 1.5rem;
-  color: #333;
   margin: 3px;
   z-index: 2;
+
+  ${(props) =>
+    props.theme &&
+    css`
+      color: ${props.theme.primaryText};
+    `}
 
   @media ${device.mobileL} {
     font-size: 2.5rem;
@@ -30,9 +42,14 @@ export const ToolBarLogoIcon = styled(IoMdSunny)`
 `;
 
 export const ToolBarLogoText = styled.h3`
-  color: #333;
   font-size: 1.4rem;
   z-index: 2;
+
+  ${(props) =>
+    props.theme &&
+    css`
+      color: ${props.theme.primaryText};
+    `}
 
   @media ${device.mobileL} {
     font-size: 2rem;
@@ -46,6 +63,7 @@ export const ToolBarSpacer = styled.span`
 export const NavLinksFrame = styled.ul`
   display: flex;
   list-style: none;
+  padding: 0;
 
   @media ${device.mobileL} {
     align-items: center;
@@ -59,7 +77,12 @@ export const NavLinksFrame = styled.ul`
     height: 100vh;
     width: 100vw;
     flex-direction: column;
-    background: #fff;
+
+    ${(props) =>
+      props.theme &&
+      css`
+        background: ${props.theme.background};
+      `}
 
     ${(props) =>
       !props.isNavOpen
@@ -81,18 +104,49 @@ export const NavLinksLi = styled.li`
 export const NavHamburger = styled(IconButton)`
   && {
     display: none;
-    min-width: 2rem;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
     transition: 0.5s;
     border-radius: 50%;
     z-index: 2;
+    padding: 0.7rem;
 
     @media ${device.mobileL} {
       display: block;
 
       > * {
-        color: #333;
-        font-size: 3rem;
-        line-height: 3rem;
+        ${(props) =>
+          props.theme &&
+          css`
+            color: ${props.theme.primaryText};
+          `}
+
+        font-size: 2.5rem;
+        line-height: 2.5rem;
+      }
+    }
+  }
+`;
+
+export const NavIconButton = styled(IconButton)`
+  && {
+    z-index: 2;
+    font-weight: bold;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    padding: 0.7rem;
+
+
+    ${(props) =>
+      props.theme &&
+      css`
+        color: ${props.theme.primaryText};
+      `}
+
+    @media ${device.mobileL} {
+      > * {
+        font-size: 2.5rem;
+        line-height: 2.5rem;
       }
     }
   }

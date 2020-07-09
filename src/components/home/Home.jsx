@@ -9,7 +9,6 @@ import {
   CurrentTemperature,
   CurrentWeatherIcon,
 } from "../../styles/globals/currentWeatherStyles";
-import { CircularProgress } from "@material-ui/core";
 import ForecastCard from "./ForecastCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentCityData } from "../../redux/asyncActions";
@@ -17,15 +16,35 @@ import SearchBar from "../SearchBar";
 import { addToFavorites, removeFromFavorites } from "../../redux/actions";
 import { PrimaryButton } from "../../styles/globals/buttonStyles";
 import getWeatherStyle from "../../utils/functions/getWeatherIcon";
+import BarLoader from "react-spinners/BarLoader";
+import { ErrorMessage } from "../../styles/globals/errorStyles";
+import { Helmet } from "react-helmet-async";
+import { convertUnit } from "../../utils/functions/convertUnit";
 
 export default function Home({ history }) {
-  const { currentCity, fetch, favoriteCities } = useSelector((state) => state);
+  const { currentCity, fetch, favoriteCities, unit } = useSelector(
+    (state) => state
+  );
   const dispatch = useDispatch();
-  const { currentWeather, name, ID, key, forecastWeather } = currentCity;
-  const weatherStyle = getWeatherStyle(currentWeather.WeatherIcon);
+  const {
+    currentWeather,
+    name,
+    ID,
+    key,
+    country,
+    forecastWeather,
+  } = currentCity;
+  const favoriteCityObject = {
+    name,
+    ID,
+    key,
+    country,
+    loading: true,
+    error: false,
+  };
 
+  const weatherStyle = getWeatherStyle(currentWeather.WeatherIcon);
   const isFavorites = favoriteCities.some((city) => city.key === key);
-  const favoriteCityObject = { name, ID, key, loading: true, error: false };
 
   useEffect(() => {
     dispatch(getCurrentCityData(key));
@@ -51,23 +70,30 @@ export default function Home({ history }) {
 
   return (
     <>
+      <Helmet>
+        <title>WeatherApp</title>
+      </Helmet>
+
       <SearchBar history={history} />
 
       <CurrentMain>
         {fetch.loading ? (
-          <CircularProgress color="secondary" />
+          <BarLoader color="#f50057" width={150} />
         ) : !fetch.error ? (
           <>
             <CurrentHeader backgroundColor={weatherStyle.backgroundColor}>
               <CurrentCityText>
                 {name} ({ID})
               </CurrentCityText>
-              <CurrentCountryText>Israel</CurrentCountryText>
+              <CurrentCountryText>{country}</CurrentCountryText>
 
               <CurrentInfoFrame>
                 <CurrentTemperature>
                   {currentWeather.Temperature &&
-                    `${currentWeather.Temperature.Metric.Value}° ${currentWeather.Temperature.Metric.Unit}`}
+                    `${convertUnit(
+                      unit,
+                      currentWeather.Temperature.Metric.Value
+                    )}`}
                 </CurrentTemperature>
 
                 <CurrentWeatherIcon color={weatherStyle.iconColor}>
@@ -75,9 +101,10 @@ export default function Home({ history }) {
                 </CurrentWeatherIcon>
 
                 <PrimaryButton
-                  variant={isFavorites ? "contained" : "outlined"}
                   disableElevation
-                  color={isFavorites ? "secondary" : "inherit"}
+                  variant={isFavorites ? "contained" : "outlined"}
+                  outline={true}
+                  primary={isFavorites ? true : false}
                   onClick={() =>
                     favoritesClickHandler(favoriteCityObject, isFavorites)
                   }
@@ -95,7 +122,7 @@ export default function Home({ history }) {
             </ForecastFrame>
           </>
         ) : (
-          <h1>Error! please try again later.</h1>
+          <ErrorMessage>Error! please try again later .</ErrorMessage>
         )}
       </CurrentMain>
     </>

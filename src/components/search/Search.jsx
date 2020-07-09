@@ -3,8 +3,15 @@ import SearchBar from "../SearchBar";
 import { useDispatch, useSelector } from "react-redux";
 import { searchCity } from "../../redux/asyncActions";
 import SearchResults from "./SearchResults";
-import { CircularProgress } from "@material-ui/core";
-import { CurrentMain } from "../../styles/pages/homeStyles";
+import { SearchMain } from "../../styles/pages/searchStyles";
+import { onlyEnglishRegex } from "../../utils/regex";
+import { fetchFailed } from "../../redux/actions";
+import BarLoader from "react-spinners/BarLoader";
+import {
+  SearchNoResults,
+  ErrorMessage,
+} from "../../styles/globals/errorStyles";
+import { Helmet } from "react-helmet-async";
 
 export default function Search({ match, history }) {
   const { searchResults, fetch } = useSelector((state) => state);
@@ -12,21 +19,33 @@ export default function Search({ match, history }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(searchCity(searchText));
-  }, []);
+    if (onlyEnglishRegex.test(searchText)) {
+      dispatch(searchCity(searchText));
+    } else {
+      dispatch(fetchFailed());
+    }
+  }, [searchText]);
 
   return (
     <div>
+      <Helmet>
+        <title>WeatherApp | Search</title>
+      </Helmet>
+
       <SearchBar text={searchText} history={history} />
-      <CurrentMain>
+      <SearchMain>
         {fetch.loading ? (
-          <CircularProgress color="secondary" />
+          <BarLoader color="#f50057" width={150} />
         ) : !fetch.error ? (
-          <SearchResults results={searchResults} history={history} />
+          searchResults.length ? (
+            <SearchResults results={searchResults} history={history} />
+          ) : (
+            <SearchNoResults />
+          )
         ) : (
-          <h1>Error! please try again later.</h1>
+          <ErrorMessage />
         )}
-      </CurrentMain>
+      </SearchMain>
     </div>
   );
 }

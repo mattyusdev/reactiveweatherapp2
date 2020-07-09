@@ -12,6 +12,7 @@ export default function SearchResults({ results, history }) {
       key: data.Key,
       name: data.LocalizedName,
       ID: data.AdministrativeArea.ID,
+      country: data.Country.LocalizedName,
     };
 
     dispatch(setCurrentCity(cityData));
@@ -23,7 +24,7 @@ export default function SearchResults({ results, history }) {
     <SearchResultsFrame>
       <List aria-label="secondary mailbox folders">
         {results.map((res) => (
-          <ListItem button onClick={() => clickHandler(res)}>
+          <ListItem key={res.Key} button onClick={() => clickHandler(res)}>
             <ListItemText
               primary={res.LocalizedName}
               secondary={`${res.Country && res.Country.LocalizedName}, ${

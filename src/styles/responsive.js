@@ -13,6 +13,11 @@ export const GlobalStyle = createGlobalStyle`
     html {
         font-size: 15px;
         
+        ${(props) =>
+          props.theme &&
+          css`
+            background: ${props.theme.background};
+          `}
 
         @media ${device.laptop} {
             font-size: 13px;

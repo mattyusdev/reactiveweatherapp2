@@ -13,6 +13,8 @@ import {
   FETCH_FAVORITE_STARTED,
   FETCH_FAVORITE_SUCCESS,
   FETCH_FAVORITE_FAILED,
+  CHANGE_THEME,
+  CHANGE_UNIT,
 } from "./types";
 
 const initalState = {
@@ -20,6 +22,7 @@ const initalState = {
     key: "215854",
     name: "Tel Aviv",
     ID: "TA",
+    country: "Israel",
     currentWeather: {},
     forecastWeather: [],
   },
@@ -29,6 +32,8 @@ const initalState = {
     loading: true,
     error: false,
   },
+  theme: "light",
+  unit: "c",
 };
 
 export const weatherReducer = (state = initalState, action) => {
@@ -56,10 +61,9 @@ export const weatherReducer = (state = initalState, action) => {
         currentCity: { ...state.currentCity, forecastWeather: action.payload },
       };
     case SET_CURRENT_CITY:
-      const { key, name, ID } = action.payload;
       return {
         ...state,
-        currentCity: { ...state.currentCity, key, name, ID },
+        currentCity: { ...state.currentCity, ...action.payload },
       };
     case SET_SEARCH_RESULTS:
       return {
@@ -99,7 +103,7 @@ export const weatherReducer = (state = initalState, action) => {
         ...state,
         favoriteCities: state.favoriteCities.map((city) => {
           if (city.key === action.payload) {
-            return { ...city, loading: false };
+            return { ...city, loading: false, error: false };
           } else {
             return city;
           }
@@ -126,6 +130,16 @@ export const weatherReducer = (state = initalState, action) => {
             return city;
           }
         }),
+      };
+    case CHANGE_THEME:
+      return {
+        ...state,
+        theme: state.theme === "light" ? "dark" : "light",
+      };
+    case CHANGE_UNIT:
+      return {
+        ...state,
+        unit: state.unit === "c" ? "f" : "c",
       };
     default:
       return { ...state };

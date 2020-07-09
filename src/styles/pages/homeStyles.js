@@ -5,7 +5,9 @@ import { device } from "../responsive";
 export const CurrentMain = styled.main`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
+  min-height: 200px;
 `;
 
 export const ForecastFrame = styled.div`
@@ -13,7 +15,7 @@ export const ForecastFrame = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 4rem;
+  padding: 2rem;
 
   && {
     > * {
@@ -28,10 +30,15 @@ export const ForecastCustomCard = styled(Card)`
     padding: 1.5rem;
     text-align: center;
     width: 17rem;
+    background: transparent;
 
-    > * {
-      color: #333;
-    }
+    ${(props) =>
+      props.theme &&
+      css`
+        > * {
+          color: ${props.theme.primaryText};
+        }
+      `}
 
     @media ${device.mobileL} {
       width: 100%;
@@ -55,7 +62,13 @@ export const ForecastInfoFrame = styled.div`
   justify-content: center;
 
   > div {
-    margin: 10px;
+    margin: 10px 0;
+    width: 50%;
+
+    @media ${device.mobileL} {
+      width: auto;
+      margin: 10px;
+    }
   }
 `;
 

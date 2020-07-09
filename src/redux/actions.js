@@ -13,6 +13,8 @@ import {
   FETCH_FAVORITE_SUCCESS,
   FETCH_FAVORITE_FAILED,
   SET_FAVORITE_CURRENT_WEATHER,
+  CHANGE_THEME,
+  CHANGE_UNIT,
 } from "./types";
 
 export const fetchStarted = () => {
@@ -71,5 +73,17 @@ export const setFavoriteCurrentWeather = (cityKey, data) => {
   return {
     type: SET_FAVORITE_CURRENT_WEATHER,
     payload: { cityKey, data },
+  };
+};
+
+export const changeTheme = () => {
+  return {
+    type: CHANGE_THEME,
+  };
+};
+
+export const changeUnit = () => {
+  return {
+    type: CHANGE_UNIT,
   };
 };

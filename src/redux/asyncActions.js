@@ -8,6 +8,8 @@ import {
   fetchFavoriteStarted,
   setFavoriteCurrentWeather,
   fetchFavoriteSuccess,
+  fetchFavoriteFailed,
+  setCurrentCity,
 } from "./actions";
 import axios from "axios";
 
@@ -32,7 +34,6 @@ export const getCurrentCityData = (cityKey) => {
       dispatch(setForecastWeather(forecastResponse.data.DailyForecasts));
       dispatch(fetchSuccess());
     } catch (err) {
-      console.log(err);
       dispatch(fetchFailed());
     }
     // }, 1000);
@@ -54,7 +55,6 @@ export const searchCity = (cityName) => {
       dispatch(setSearchResults(searchResponse.data));
       dispatch(fetchSuccess());
     } catch (err) {
-      console.log(err);
       dispatch(fetchFailed());
     }
     // }, 1000);
@@ -76,8 +76,43 @@ export const getCurrentFavoriteCityData = (cityKey) => {
       dispatch(setFavoriteCurrentWeather(cityKey, currentResponse.data[0]));
       dispatch(fetchFavoriteSuccess(cityKey));
     } catch (err) {
-      //////**************************
+      dispatch(fetchFavoriteFailed(cityKey));
     }
     // }, 1000);
+  };
+};
+
+export const getCurrentLocation = () => {
+  return (dispatch) => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (result) => {
+        dispatch(fetchStarted());
+
+        try {
+          const { latitude, longitude } = result.coords;
+
+          const locationResponse = await axios.get(
+            `http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${process.env.REACT_APP_API_KEY}&q=${latitude},${longitude}`
+          );
+
+          // const locationResponse = await axios.get(
+          //   "/localapi/currentLocation.json"
+          // );
+
+          const cityData = {
+            key: locationResponse.data.Key,
+            ID: locationResponse.data.AdministrativeArea.ID,
+            name: locationResponse.data.LocalizedName,
+            country: locationResponse.data.Country.LocalizedName,
+          };
+
+          dispatch(setCurrentCity(cityData));
+        } catch (err) {
+          console.log(err);
+
+          dispatch(fetchFailed());
+        }
+      });
+    }
   };
 };

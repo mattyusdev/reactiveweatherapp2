@@ -10,9 +10,12 @@ import {
   ForecastWeatherIcon,
 } from "../../styles/pages/homeStyles";
 import getWeatherStyle from "../../utils/functions/getWeatherIcon";
+import { convertUnit } from "../../utils/functions/convertUnit";
+import { useSelector } from "react-redux";
 
 export default function ForecastCard({ foreCastData }) {
   const { Date: ForeCastDate, Temperature, Day, Night } = foreCastData;
+  const { unit } = useSelector((state) => state);
   const weatherStyleDay = getWeatherStyle(Day.Icon);
   const weatherStyleNight = getWeatherStyle(Night.Icon);
 
@@ -46,7 +49,10 @@ export default function ForecastCard({ foreCastData }) {
 
       <ForecastTemperatureText>
         {Temperature &&
-          `${Temperature.Minimum.Value}°${Temperature.Minimum.Unit} - ${Temperature.Maximum.Value}°${Temperature.Maximum.Unit}`}
+          `${convertUnit(unit, Temperature.Minimum.Value)} - ${convertUnit(
+            unit,
+            Temperature.Maximum.Value
+          )}`}
       </ForecastTemperatureText>
     </ForecastCustomCard>
   );

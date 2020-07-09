@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
-import { CircularProgress } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getCurrentFavoriteCityData } from "../../redux/asyncActions";
 import { setCurrentCity } from "../../redux/actions";
 
@@ -16,9 +15,14 @@ import {
 } from "../../styles/globals/currentWeatherStyles";
 import { PrimaryButton } from "../../styles/globals/buttonStyles";
 import getWeatherStyle from "../../utils/functions/getWeatherIcon";
+import BarLoader from "react-spinners/BarLoader";
+import { ErrorMessage } from "../../styles/globals/errorStyles";
+import { FavoriteFrame } from "../../styles/pages/favoritesStyles";
+import { convertUnit } from "../../utils/functions/convertUnit";
 
 export default function FavoriteCurrentHeader({ data, history }) {
   const dispatch = useDispatch();
+  const { unit } = useSelector((state) => state);
   const weatherStyle = getWeatherStyle(
     data.currentWeather && data.currentWeather.WeatherIcon
   );
@@ -34,45 +38,55 @@ export default function FavoriteCurrentHeader({ data, history }) {
   };
 
   return (
-    <CurrentHeader small={true} backgroundColor={weatherStyle.backgroundColor}>
+    <CurrentHeader
+      small={true}
+      backgroundColor={weatherStyle && weatherStyle.backgroundColor}
+    >
       <CurrentCityText small={true}>
         {data.name}({data.ID})
       </CurrentCityText>
 
-      <CurrentCountryText small={true}>Israel</CurrentCountryText>
+      <CurrentCountryText small={true}>{data.country}</CurrentCountryText>
 
-      {data.loading ? (
-        <CircularProgress color="secondary" />
-      ) : (
-        <>
-          <CurrentInfoFrame small={true}>
-            <CurrentTemperature small={true}>
-              {data.currentWeather &&
-                data.currentWeather.Temperature.Metric.Value}
-              °
-              {data.currentWeather &&
-                data.currentWeather.Temperature.Metric.Unit}
-            </CurrentTemperature>
+      <FavoriteFrame>
+        {data.loading ? (
+          <BarLoader color="#fff" />
+        ) : !data.error ? (
+          <>
+            <CurrentInfoFrame small={true}>
+              <CurrentTemperature small={true}>
+                {data.currentWeather &&
+                  convertUnit(
+                    unit,
+                    data.currentWeather.Temperature.Metric.Value
+                  )}
+              </CurrentTemperature>
 
-            <CurrentWeatherIcon small={true} color={weatherStyle.iconColor}>
-              <weatherStyle.Icon />
-            </CurrentWeatherIcon>
+              <CurrentWeatherIcon
+                small={true}
+                color={weatherStyle && weatherStyle.iconColor}
+              >
+                <weatherStyle.Icon />
+              </CurrentWeatherIcon>
 
-            <PrimaryButton
-              variant="contained"
-              disableElevation
-              color="secondary"
-              onClick={() => viewFavoriteClickHandler(data)}
-            >
-              VIEW
-            </PrimaryButton>
-          </CurrentInfoFrame>
+              <PrimaryButton
+                variant="contained"
+                disableElevation
+                primary={true}
+                onClick={() => viewFavoriteClickHandler(data)}
+              >
+                VIEW
+              </PrimaryButton>
+            </CurrentInfoFrame>
 
-          <CurrentForecast small={true}>
-            {data.currentWeather && data.currentWeather.WeatherText}
-          </CurrentForecast>
-        </>
-      )}
+            <CurrentForecast small={true}>
+              {data.currentWeather && data.currentWeather.WeatherText}
+            </CurrentForecast>
+          </>
+        ) : (
+          <ErrorMessage isFavorite={true} />
+        )}
+      </FavoriteFrame>
     </CurrentHeader>
   );
 }

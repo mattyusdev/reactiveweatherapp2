@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import { Button } from "@material-ui/core";
 import { device } from "../responsive";
 
-export const ButtonWithProps = ({ nav, ...otherProps }) => (
+export const ButtonWithProps = ({ nav, primary, outline, ...otherProps }) => (
   <Button {...otherProps} />
 );
 
@@ -18,10 +18,29 @@ export const PrimaryButton = styled(ButtonWithProps)`
     margin: 3px;
 
     ${(props) =>
-      props.color === "inherit" &&
+      props.primary
+        ? css`
+            color: #fff;
+            background: ${props.theme.primary};
+
+            :hover {
+              background: ${props.theme.primaryHover};
+            }
+          `
+        : css`
+            color: ${props.theme.primaryText};
+            background: transparent;
+
+            :hover {
+              background: rgba(170, 170, 170, 0.2);
+            }
+          `}
+
+    ${(props) =>
+      props.outline &&
       css`
-        background: transparent;
-        /* color: #333; */
+        color: #fff;
+        border-color: #fff;
       `}
 
     ${(props) =>
