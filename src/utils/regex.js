@@ -1,1 +1,1 @@
-export const onlyEnglishRegex = /^[A-Za-z]+$/;
+export const onlyEnglishRegex = /^[a-zA-Z ]+$/;

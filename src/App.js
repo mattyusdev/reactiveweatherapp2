@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
-import { Route } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Home from "./components/home/Home";
 import Favorites from "./components/favorites/Favorites";
 import Search from "./components/search/Search";
@@ -38,15 +38,21 @@ function App() {
   }, []);
 
   return (
-    <div>
+    <>
       <ThemeProvider theme={theme === "light" ? light : dark}>
         <GlobalStyle isNavOpen={isNavOpen} />
         <Navbar isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
-        <Route path="/" exact component={Home} />
-        <Route path="/search/:text" component={Search} />
-        <Route path="/favorites" exact component={Favorites} />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/search/:text" component={Search} />
+          <Route path="/favorites" exact component={Favorites} />
+
+          <Route path="*">
+            <Redirect to="/" />
+          </Route>
+        </Switch>
       </ThemeProvider>
-    </div>
+    </>
   );
 }
 
