@@ -18,10 +18,10 @@ export const getCurrentCityData = (cityKey) => {
     dispatch(fetchStarted());
     try {
       const currentResponse = await axios.get(
-        `http://dataservice.accuweather.com/currentconditions/v1/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
+        `https://dataservice.accuweather.com/currentconditions/v1/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
       );
       const forecastResponse = await axios.get(
-        `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
+        `https://dataservice.accuweather.com/forecasts/v1/daily/5day/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
       );
 
       dispatch(setCurrentWeather(currentResponse.data[0]));
@@ -39,7 +39,7 @@ export const searchCity = (cityName) => {
 
     try {
       const searchResponse = await axios.get(
-        `http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${process.env.REACT_APP_API_KEY}&q=${cityName}`
+        `https://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${process.env.REACT_APP_API_KEY}&q=${cityName}`
       );
 
       dispatch(setSearchResults(searchResponse.data));
@@ -56,7 +56,7 @@ export const getCurrentFavoriteCityData = (cityKey) => {
 
     try {
       const currentResponse = await axios.get(
-        `http://dataservice.accuweather.com/currentconditions/v1/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
+        `https://dataservice.accuweather.com/currentconditions/v1/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
       );
 
       dispatch(setFavoriteCurrentWeather(cityKey, currentResponse.data[0]));
@@ -77,7 +77,7 @@ export const getCurrentLocation = () => {
           const { latitude, longitude } = result.coords;
 
           const locationResponse = await axios.get(
-            `http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${process.env.REACT_APP_API_KEY}&q=${latitude},${longitude}`
+            `https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${process.env.REACT_APP_API_KEY}&q=${latitude},${longitude}`
           );
 
           const cityData = {
