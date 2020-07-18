@@ -1,0 +1,59 @@
+{
+  "Version": 1,
+  "Key": "215838",
+  "Type": "City",
+  "Rank": 45,
+  "LocalizedName": "Holon",
+  "EnglishName": "Holon",
+  "PrimaryPostalCode": "",
+  "Region": {
+    "ID": "MEA",
+    "LocalizedName": "Middle East",
+    "EnglishName": "Middle East"
+  },
+  "Country": {
+    "ID": "IL",
+    "LocalizedName": "Israel",
+    "EnglishName": "Israel"
+  },
+  "AdministrativeArea": {
+    "ID": "TA",
+    "LocalizedName": "Tel Aviv",
+    "EnglishName": "Tel Aviv",
+    "Level": 1,
+    "LocalizedType": "District",
+    "EnglishType": "District",
+    "CountryID": "IL"
+  },
+  "TimeZone": {
+    "Code": "IDT",
+    "Name": "Asia/Jerusalem",
+    "GmtOffset": 3,
+    "IsDaylightSaving": true,
+    "NextOffsetChange": "2020-10-24T23:00:00Z"
+  },
+  "GeoPosition": {
+    "Latitude": 32.003,
+    "Longitude": 34.756,
+    "Elevation": {
+      "Metric": {
+        "Value": 23,
+        "Unit": "m",
+        "UnitType": 5
+      },
+      "Imperial": {
+        "Value": 75,
+        "Unit": "ft",
+        "UnitType": 0
+      }
+    }
+  },
+  "IsAlias": false,
+  "SupplementalAdminAreas": [],
+  "DataSets": [
+    "AirQualityCurrentConditions",
+    "AirQualityForecasts",
+    "Alerts",
+    "ForecastConfidence"
+  ]
+}
