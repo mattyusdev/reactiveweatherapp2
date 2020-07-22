@@ -11,15 +11,19 @@ import {
 } from "../../styles/globals/currentWeatherStyles";
 import ForecastCard from "./ForecastCard";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentCityData } from "../../redux/asyncActions";
+import { getCurrentCityData } from "../../redux/actions/asyncActions";
 import SearchBar from "../SearchBar";
-import { addToFavorites, removeFromFavorites } from "../../redux/actions";
+import {
+  addToFavorites,
+  removeFromFavorites,
+} from "../../redux/actions/actions";
 import { PrimaryButton } from "../../styles/globals/buttonStyles";
 import getWeatherStyle from "../../utils/functions/getWeatherIcon";
 import BarLoader from "react-spinners/BarLoader";
 import { ErrorMessage } from "../../styles/globals/errorStyles";
 import { Helmet } from "react-helmet-async";
 import { convertUnit } from "../../utils/functions/convertUnit";
+import { favoritesHandler } from "../../redux/actions/middlewareActions";
 
 export default function Home({ history }) {
   const { currentCity, fetch, favoriteCities, unit } = useSelector(
@@ -49,24 +53,6 @@ export default function Home({ history }) {
   useEffect(() => {
     dispatch(getCurrentCityData(key));
   }, [key]);
-
-  const favoritesClickHandler = (cityData, isInFavorites) => {
-    if (isInFavorites) {
-      dispatch(removeFromFavorites(cityData.key));
-      localStorage.setItem(
-        "favorites",
-        JSON.stringify(
-          favoriteCities.filter((city) => city.key !== cityData.key)
-        )
-      );
-    } else {
-      dispatch(addToFavorites(cityData));
-      localStorage.setItem(
-        "favorites",
-        JSON.stringify([...favoriteCities, cityData])
-      );
-    }
-  };
 
   return (
     <>
@@ -106,7 +92,7 @@ export default function Home({ history }) {
                   outline={true}
                   primary={isFavorites ? true : false}
                   onClick={() =>
-                    favoritesClickHandler(favoriteCityObject, isFavorites)
+                    dispatch(favoritesHandler(favoriteCityObject, isFavorites))
                   }
                 >
                   {isFavorites ? "Favorite ❤" : "Add favorite"}
@@ -115,6 +101,7 @@ export default function Home({ history }) {
 
               <CurrentForecast>{currentWeather.WeatherText}</CurrentForecast>
             </CurrentHeader>
+
             <ForecastFrame>
               {forecastWeather.map((day) => (
                 <ForecastCard foreCastData={day} key={day.Date} />

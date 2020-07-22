@@ -6,11 +6,15 @@ import Home from "./components/home/Home";
 import Favorites from "./components/favorites/Favorites";
 import Search from "./components/search/Search";
 import { useDispatch, useSelector } from "react-redux";
-import { setAllFavorites, changeUnit, changeTheme } from "./redux/actions";
 import { GlobalStyle } from "./styles/responsive";
 import { ThemeProvider } from "styled-components";
 import { light, dark } from "./styles/theme";
-import { getCurrentLocation } from "./redux/asyncActions";
+import { getCurrentLocation } from "./redux/actions/asyncActions";
+import {
+  getLocalFavorites,
+  getLocalTheme,
+  getLocalUnit,
+} from "./redux/actions/middlewareActions";
 
 function App() {
   const dispatch = useDispatch();
@@ -18,22 +22,9 @@ function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   useEffect(() => {
-    const localFavorites = JSON.parse(localStorage.getItem("favorites"));
-    const localUnit = localStorage.getItem("unit");
-    const localTheme = localStorage.getItem("theme");
-
-    if (localFavorites) {
-      dispatch(setAllFavorites(localFavorites));
-    }
-
-    if (localUnit) {
-      dispatch(changeUnit());
-    }
-
-    if (localTheme) {
-      dispatch(changeTheme());
-    }
-
+    dispatch(getLocalFavorites());
+    dispatch(getLocalTheme());
+    dispatch(getLocalUnit());
     dispatch(getCurrentLocation());
   }, []);
 

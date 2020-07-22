@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import SearchBar from "../SearchBar";
 import { useDispatch, useSelector } from "react-redux";
-import { searchCity } from "../../redux/asyncActions";
+import { searchCity } from "../../redux/actions/asyncActions";
 import SearchResults from "./SearchResults";
 import { SearchMain } from "../../styles/pages/searchStyles";
 import { onlyEnglishRegex } from "../../utils/regex";
-import { fetchFailed } from "../../redux/actions";
+import { fetchFailed } from "../../redux/actions/actions";
 import BarLoader from "react-spinners/BarLoader";
 import {
   SearchNoResults,

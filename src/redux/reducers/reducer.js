@@ -15,7 +15,7 @@ import {
   FETCH_FAVORITE_FAILED,
   CHANGE_THEME,
   CHANGE_UNIT,
-} from "./types";
+} from "../types/types";
 
 const initalState = {
   currentCity: {
@@ -142,6 +142,6 @@ export const weatherReducer = (state = initalState, action) => {
         unit: state.unit === "c" ? "f" : "c",
       };
     default:
-      return { ...state };
+      return state;
   }
 };

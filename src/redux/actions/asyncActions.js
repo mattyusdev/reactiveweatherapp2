@@ -13,22 +13,30 @@ import {
 } from "./actions";
 import axios from "axios";
 
+const {
+  REACT_APP_API_LOCAL: apiLocal,
+  REACT_APP_API_ROOT: apiRoot,
+  REACT_APP_API_KEY: apiKey,
+} = process.env;
+
 export const getCurrentCityData = (cityKey) => {
   return async (dispatch) => {
     dispatch(fetchStarted());
-    // setTimeout(async () => {
     try {
-      // const currentResponse = await axios.get(
-      //   `http://dataservice.accuweather.com/currentconditions/v1/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
+      // const getCurrentData = axios.get(
+      //   `${apiRoot}/currentconditions/v1/${cityKey}?apikey=${apiKey}&metric=true`
       // );
-      // const forecastResponse = await axios.get(
-      //   `http://dataservice.accuweather.com/forecasts/v1/daily/5day/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
+      // const getForecastData = axios.get(
+      //   `${apiRoot}/forecasts/v1/daily/5day/${cityKey}?apikey=${apiKey}&metric=true`
       // );
 
-      const currentResponse = await axios.get("/localapi/telavivCurrent.json");
-      const forecastResponse = await axios.get(
-        "/localapi/telavivForecast.json"
-      );
+      const getCurrentData = axios.get(`${apiLocal}/telavivCurrent.json`);
+      const getForecastData = axios.get(`${apiLocal}/telavivForecast.json`);
+
+      const [currentResponse, forecastResponse] = await Promise.all([
+        getCurrentData,
+        getForecastData,
+      ]);
 
       dispatch(setCurrentWeather(currentResponse.data[0]));
       dispatch(setForecastWeather(forecastResponse.data.DailyForecasts));
@@ -36,7 +44,6 @@ export const getCurrentCityData = (cityKey) => {
     } catch (err) {
       dispatch(fetchFailed());
     }
-    // }, 1000);
   };
 };
 
@@ -44,20 +51,18 @@ export const searchCity = (cityName) => {
   return async (dispatch) => {
     dispatch(fetchStarted());
 
-    // setTimeout(async () => {
     try {
       // const searchResponse = await axios.get(
-      //   `http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${process.env.REACT_APP_API_KEY}&q=${cityName}`
+      //   `${apiRoot}/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${cityName}`
       // );
 
-      const searchResponse = await axios.get("/localapi/search.json");
+      const searchResponse = await axios.get(`${apiLocal}/search.json`);
 
       dispatch(setSearchResults(searchResponse.data));
       dispatch(fetchSuccess());
     } catch (err) {
       dispatch(fetchFailed());
     }
-    // }, 1000);
   };
 };
 
@@ -65,20 +70,20 @@ export const getCurrentFavoriteCityData = (cityKey) => {
   return async (dispatch) => {
     dispatch(fetchFavoriteStarted(cityKey));
 
-    // setTimeout(async () => {
     try {
       // const currentResponse = await axios.get(
-      //   `http://dataservice.accuweather.com/currentconditions/v1/${cityKey}?apikey=${process.env.REACT_APP_API_KEY}&metric=true`
+      //   `${apiRoot}/currentconditions/v1/${cityKey}?apikey=${apiKey}&metric=true`
       // );
 
-      const currentResponse = await axios.get("/localapi/telavivCurrent.json");
+      const currentResponse = await axios.get(
+        `${apiLocal}/telavivCurrent.json`
+      );
 
       dispatch(setFavoriteCurrentWeather(cityKey, currentResponse.data[0]));
       dispatch(fetchFavoriteSuccess(cityKey));
     } catch (err) {
       dispatch(fetchFavoriteFailed(cityKey));
     }
-    // }, 1000);
   };
 };
 
@@ -92,11 +97,11 @@ export const getCurrentLocation = () => {
           const { latitude, longitude } = result.coords;
 
           // const locationResponse = await axios.get(
-          //   `http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${process.env.REACT_APP_API_KEY}&q=${latitude},${longitude}`
+          //   `${apiRoot}/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${latitude},${longitude}`
           // );
 
           const locationResponse = await axios.get(
-            "/localapi/currentLocation.json"
+            `${apiLocal}/currentLocation.json`
           );
 
           const cityData = {

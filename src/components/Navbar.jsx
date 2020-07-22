@@ -15,30 +15,13 @@ import { PrimaryButton } from "../styles/globals/buttonStyles";
 import { RiMenu4Line, RiCloseLine } from "react-icons/ri";
 import { MdBrightness4, MdBrightnessHigh } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { changeTheme, changeUnit } from "../redux/actions";
+import { changeTheme, changeUnit } from "../redux/actions/actions";
+import { themeHandler, unitHandler } from "../redux/actions/middlewareActions";
 
 export default function Navbar({ isNavOpen, setIsNavOpen }) {
   const location = useLocation().pathname;
   const dispatch = useDispatch();
   const { theme, unit } = useSelector((state) => state);
-
-  const changeUnitHandler = () => {
-    if (unit === "c") {
-      localStorage.setItem("unit", "f");
-    } else {
-      localStorage.removeItem("unit");
-    }
-    dispatch(changeUnit());
-  };
-
-  const changeThemeHandler = () => {
-    if (theme === "light") {
-      localStorage.setItem("theme", "dark");
-    } else {
-      localStorage.removeItem("theme");
-    }
-    dispatch(changeTheme());
-  };
 
   return (
     <CustomAppBar position="static" component="nav">
@@ -77,11 +60,11 @@ export default function Navbar({ isNavOpen, setIsNavOpen }) {
           </NavLinksLi>
         </NavLinksFrame>
 
-        <NavIconButton onClick={changeUnitHandler}>
+        <NavIconButton onClick={() => dispatch(unitHandler())}>
           {unit === "c" ? "c °" : "f °"}
         </NavIconButton>
 
-        <NavIconButton onClick={changeThemeHandler}>
+        <NavIconButton onClick={() => dispatch(themeHandler())}>
           {theme === "light" ? <MdBrightness4 /> : <MdBrightnessHigh />}
         </NavIconButton>
 

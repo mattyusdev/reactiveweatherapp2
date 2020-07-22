@@ -2,7 +2,7 @@ import React from "react";
 import { List, ListItem, ListItemText } from "@material-ui/core";
 import { SearchResultsFrame } from "../../styles/pages/searchStyles";
 import { useDispatch } from "react-redux";
-import { setCurrentCity } from "../../redux/actions";
+import { setCurrentCity } from "../../redux/actions/actions";
 
 export default function SearchResults({ results, history }) {
   const dispatch = useDispatch();

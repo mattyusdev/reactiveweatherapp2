@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentFavoriteCityData } from "../../redux/asyncActions";
-import { setCurrentCity } from "../../redux/actions";
+import { getCurrentFavoriteCityData } from "../../redux/actions/asyncActions";
+import { setCurrentCity } from "../../redux/actions/actions";
 
 import {
   CurrentHeader,

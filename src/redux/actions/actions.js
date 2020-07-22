@@ -15,7 +15,7 @@ import {
   SET_FAVORITE_CURRENT_WEATHER,
   CHANGE_THEME,
   CHANGE_UNIT,
-} from "./types";
+} from "../types/types";
 
 export const fetchStarted = () => {
   return { type: FETCH_STARTED };
