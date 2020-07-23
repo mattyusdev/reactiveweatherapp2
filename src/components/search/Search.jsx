@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { searchCity } from "../../redux/actions/asyncActions";
 import SearchResults from "./SearchResults";
 import { SearchMain } from "../../styles/pages/searchStyles";
-import { onlyEnglishRegex } from "../../utils/regex";
+import { validationSchema } from "../../utils/validation";
 import { fetchFailed } from "../../redux/actions/actions";
 import BarLoader from "react-spinners/BarLoader";
 import {
@@ -19,11 +19,14 @@ export default function Search({ match, history }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (onlyEnglishRegex.test(searchText)) {
-      dispatch(searchCity(searchText));
-    } else {
-      dispatch(fetchFailed());
-    }
+    (async () => {
+      try {
+        await validationSchema.validate({ text: searchText });
+        dispatch(searchCity(searchText));
+      } catch (err) {
+        dispatch(fetchFailed());
+      }
+    })();
   }, [searchText]);
 
   return (

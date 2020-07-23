@@ -15,7 +15,6 @@ import { PrimaryButton } from "../styles/globals/buttonStyles";
 import { RiMenu4Line, RiCloseLine } from "react-icons/ri";
 import { MdBrightness4, MdBrightnessHigh } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { changeTheme, changeUnit } from "../redux/actions/actions";
 import { themeHandler, unitHandler } from "../redux/actions/middlewareActions";
 
 export default function Navbar({ isNavOpen, setIsNavOpen }) {

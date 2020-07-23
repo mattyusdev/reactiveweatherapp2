@@ -22,7 +22,7 @@ export default function SearchResults({ results, history }) {
 
   return (
     <SearchResultsFrame>
-      <List aria-label="secondary mailbox folders">
+      <List>
         {results.map((res) => (
           <ListItem key={res.Key} button onClick={() => clickHandler(res)}>
             <ListItemText

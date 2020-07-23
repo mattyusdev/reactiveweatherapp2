@@ -10,8 +10,11 @@ import {
   fetchFavoriteSuccess,
   fetchFavoriteFailed,
   setCurrentCity,
+  openAutoSearch,
+  closeAutoSearch,
 } from "./actions";
 import axios from "axios";
+import { validationSchema } from "../../utils/validation";
 
 const {
   REACT_APP_API_LOCAL: apiLocal,
@@ -44,6 +47,34 @@ export const getCurrentCityData = (cityKey) => {
     } catch (err) {
       dispatch(fetchFailed());
     }
+  };
+};
+
+let timeout = null;
+
+export const searchCityAutoCompleteHandler = (cityName) => {
+  return (dispatch, getState) => {
+    const { isAutoSearchOpen } = getState();
+    clearTimeout(timeout);
+
+    timeout = setTimeout(async () => {
+      try {
+        await validationSchema.validate({ text: cityName });
+
+        // const searchResponse = await axios.get(
+        //   `${apiRoot}/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${cityName}`
+        // );
+
+        const searchResponse = await axios.get(`${apiLocal}/search.json`);
+
+        dispatch(setSearchResults(searchResponse.data));
+        dispatch(openAutoSearch());
+      } catch (err) {
+        if (isAutoSearchOpen) {
+          dispatch(closeAutoSearch());
+        }
+      }
+    }, 500);
   };
 };
 

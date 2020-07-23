@@ -15,6 +15,8 @@ import {
   FETCH_FAVORITE_FAILED,
   CHANGE_THEME,
   CHANGE_UNIT,
+  OPEN_AUTO_SEARCH,
+  CLOSE_AUTO_SEARCH,
 } from "../types/types";
 
 const initalState = {
@@ -28,6 +30,7 @@ const initalState = {
   },
   favoriteCities: [],
   searchResults: [],
+  isAutoSearchOpen: false,
   fetch: {
     loading: true,
     error: false,
@@ -140,6 +143,16 @@ export const weatherReducer = (state = initalState, action) => {
       return {
         ...state,
         unit: state.unit === "c" ? "f" : "c",
+      };
+    case OPEN_AUTO_SEARCH:
+      return {
+        ...state,
+        isAutoSearchOpen: true,
+      };
+    case CLOSE_AUTO_SEARCH:
+      return {
+        ...state,
+        isAutoSearchOpen: false,
       };
     default:
       return state;

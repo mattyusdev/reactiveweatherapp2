@@ -17,6 +17,7 @@ export const SearchFrame = styled.div`
 export const SearchForm = styled(Form)`
   display: flex;
   align-items: baseline;
+  position: relative;
 
   div {
     width: 20rem;
@@ -67,4 +68,36 @@ export const CustomTextField = styled(TextField)`
         }
       `}
   }
+`;
+
+export const SearchAutoCompleteFrame = styled.div`
+  box-shadow: 0px 3px 21px -6px rgba(0, 0, 0, 0.3);
+  max-height: 200px;
+  overflow: hidden auto;
+  padding: 0;
+  position: absolute;
+  top: 100%;
+  z-index: 1;
+
+  ${(props) =>
+    props.theme &&
+    css`
+      background: ${props.theme.background};
+      && span,
+      p {
+        color: ${props.theme.primaryText};
+      }
+      p {
+        opacity: 0.7;
+      }
+    `}
+
+  ${(props) =>
+    props.open
+      ? css`
+          display: block;
+        `
+      : css`
+          display: none;
+        `}
 `;
