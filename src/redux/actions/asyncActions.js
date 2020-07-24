@@ -1,8 +1,8 @@
 import {
-  fetchStarted,
-  fetchSuccess,
+  fetchCurrentStarted,
+  fetchCurrentSuccess,
   setCurrentWeather,
-  fetchFailed,
+  fetchCurrentFailed,
   setForecastWeather,
   setSearchResults,
   fetchFavoriteStarted,
@@ -10,11 +10,11 @@ import {
   fetchFavoriteSuccess,
   fetchFavoriteFailed,
   setCurrentCity,
-  openAutoSearch,
-  closeAutoSearch,
+  fetchSearchStarted,
+  fetchSearchFailed,
+  fetchSearchSuccess,
 } from "./actions";
 import axios from "axios";
-import { validationSchema } from "../../utils/validation";
 
 const {
   REACT_APP_API_LOCAL: apiLocal,
@@ -24,7 +24,9 @@ const {
 
 export const getCurrentCityData = (cityKey) => {
   return async (dispatch) => {
-    dispatch(fetchStarted());
+    dispatch(fetchCurrentStarted());
+
+    // setTimeout(async () => {
     try {
       // const getCurrentData = axios.get(
       //   `${apiRoot}/currentconditions/v1/${cityKey}?apikey=${apiKey}&metric=true`
@@ -43,24 +45,22 @@ export const getCurrentCityData = (cityKey) => {
 
       dispatch(setCurrentWeather(currentResponse.data[0]));
       dispatch(setForecastWeather(forecastResponse.data.DailyForecasts));
-      dispatch(fetchSuccess());
+      dispatch(fetchCurrentSuccess());
     } catch (err) {
-      dispatch(fetchFailed());
+      dispatch(fetchCurrentFailed());
     }
+    // }, 1000);
   };
 };
 
 let timeout = null;
 
 export const searchCityAutoCompleteHandler = (cityName) => {
-  return (dispatch, getState) => {
-    const { isAutoSearchOpen } = getState();
+  return (dispatch) => {
     clearTimeout(timeout);
-
     timeout = setTimeout(async () => {
+      dispatch(fetchSearchStarted());
       try {
-        await validationSchema.validate({ text: cityName });
-
         // const searchResponse = await axios.get(
         //   `${apiRoot}/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${cityName}`
         // );
@@ -68,32 +68,11 @@ export const searchCityAutoCompleteHandler = (cityName) => {
         const searchResponse = await axios.get(`${apiLocal}/search.json`);
 
         dispatch(setSearchResults(searchResponse.data));
-        dispatch(openAutoSearch());
+        dispatch(fetchSearchSuccess());
       } catch (err) {
-        if (isAutoSearchOpen) {
-          dispatch(closeAutoSearch());
-        }
+        dispatch(fetchSearchFailed());
       }
     }, 500);
-  };
-};
-
-export const searchCity = (cityName) => {
-  return async (dispatch) => {
-    dispatch(fetchStarted());
-
-    try {
-      // const searchResponse = await axios.get(
-      //   `${apiRoot}/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${cityName}`
-      // );
-
-      const searchResponse = await axios.get(`${apiLocal}/search.json`);
-
-      dispatch(setSearchResults(searchResponse.data));
-      dispatch(fetchSuccess());
-    } catch (err) {
-      dispatch(fetchFailed());
-    }
   };
 };
 
@@ -122,7 +101,7 @@ export const getCurrentLocation = () => {
   return (dispatch) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (result) => {
-        dispatch(fetchStarted());
+        dispatch(fetchCurrentStarted());
 
         try {
           const { latitude, longitude } = result.coords;
@@ -143,10 +122,10 @@ export const getCurrentLocation = () => {
           };
 
           dispatch(setCurrentCity(cityData));
+          dispatch(fetchCurrentSuccess());
         } catch (err) {
           console.log(err);
-
-          dispatch(fetchFailed());
+          dispatch(fetchCurrentFailed());
         }
       });
     }

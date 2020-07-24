@@ -13,7 +13,6 @@ import ForecastCard from "./ForecastCard";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentCityData } from "../../redux/actions/asyncActions";
 import SearchBar from "../SearchBar";
-import { closeAutoSearch } from "../../redux/actions/actions";
 import { PrimaryButton } from "../../styles/globals/buttonStyles";
 import getWeatherStyle from "../../utils/functions/getWeatherIcon";
 import BarLoader from "react-spinners/BarLoader";
@@ -22,14 +21,8 @@ import { Helmet } from "react-helmet-async";
 import { convertUnit } from "../../utils/functions/convertUnit";
 import { favoritesHandler } from "../../redux/actions/middlewareActions";
 
-export default function Home({ history }) {
-  const {
-    currentCity,
-    fetch,
-    favoriteCities,
-    unit,
-    isAutoSearchOpen,
-  } = useSelector((state) => state);
+export default function Home() {
+  const { currentCity, favoriteCities, unit } = useSelector((state) => state);
   const dispatch = useDispatch();
   const {
     currentWeather,
@@ -53,10 +46,6 @@ export default function Home({ history }) {
 
   useEffect(() => {
     dispatch(getCurrentCityData(key));
-
-    if (isAutoSearchOpen) {
-      dispatch(closeAutoSearch());
-    }
   }, [key]);
 
   return (
@@ -65,12 +54,12 @@ export default function Home({ history }) {
         <title>WeatherApp</title>
       </Helmet>
 
-      <SearchBar includeAutoSearch={true} history={history} />
+      <SearchBar />
 
       <CurrentMain>
-        {fetch.loading ? (
+        {currentCity.loading ? (
           <BarLoader color="#f50057" width={150} />
-        ) : !fetch.error ? (
+        ) : !currentCity.error ? (
           <>
             <CurrentHeader backgroundColor={weatherStyle.backgroundColor}>
               <CurrentCityText>

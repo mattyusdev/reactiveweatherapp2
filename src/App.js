@@ -4,9 +4,8 @@ import Navbar from "./components/Navbar";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Home from "./components/home/Home";
 import Favorites from "./components/favorites/Favorites";
-import Search from "./components/search/Search";
 import { useDispatch, useSelector } from "react-redux";
-import { GlobalStyle } from "./styles/responsive";
+import { GlobalStyle } from "./styles/globalStyle";
 import { ThemeProvider } from "styled-components";
 import { light, dark } from "./styles/theme";
 import { getCurrentLocation } from "./redux/actions/asyncActions";
@@ -35,7 +34,6 @@ function App() {
         <Navbar isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/search/:text" component={Search} />
           <Route path="/favorites" exact component={Favorites} />
 
           <Route path="*">

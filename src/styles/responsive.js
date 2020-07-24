@@ -1,5 +1,3 @@
-import { createGlobalStyle, css } from "styled-components";
-
 export const device = {
   mobileS: `(max-width: 375px)`,
   mobileM: `(max-width: 584px)`,
@@ -8,35 +6,3 @@ export const device = {
   laptopS: `(max-width: 1280px)`,
   laptop: `(max-width: 1440px)`,
 };
-
-export const GlobalStyle = createGlobalStyle`
-    html {
-        font-size: 15px;
-        
-        ${(props) =>
-          props.theme &&
-          css`
-            background: ${props.theme.background};
-          `}
-
-        @media ${device.laptop} {
-            font-size: 13px;
-        }
-
-        @media ${device.tablet} {
-            font-size: 10px;
-        }
-    }
-
-    body {
-        ${(props) =>
-          !props.isNavOpen
-            ? css`
-                overflow: auto;
-              `
-            : css`
-                overflow: hidden;
-              `}
-
-    }
-`;

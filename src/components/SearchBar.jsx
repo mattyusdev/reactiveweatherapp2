@@ -1,14 +1,9 @@
 import React from "react";
 import {
   SearchFrame,
-  SearchForm,
   CustomTextField,
-  SearchAutoCompleteFrame,
 } from "../styles/globals/searchBarStyles";
-import { PrimaryButton } from "../styles/globals/buttonStyles";
-import { Formik, Field } from "formik";
-import { validationSchema } from "../utils/validation";
-import { List, ListItem, ListItemText } from "@material-ui/core";
+
 import { useDispatch, useSelector } from "react-redux";
 import { searchCityAutoCompleteHandler } from "../redux/actions/asyncActions";
 import {
@@ -16,119 +11,95 @@ import {
   closeAutoSearch,
   openAutoSearch,
 } from "../redux/actions/actions";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import { validationSchema } from "../utils/validation";
+import { useState } from "react";
+import PuffLoader from "react-spinners/PuffLoader";
+import { CircularProgress } from "@material-ui/core";
 
-export default function SearchBar({ text, history, includeAutoSearch }) {
+export default function SearchBar() {
   const dispatch = useDispatch();
-  const { searchResults, isAutoSearchOpen } = useSelector((state) => state);
-  const initialFormValue = {
-    text: text ? text : "",
-  };
+  const { searchResults, isAutoSearchOpen, loading } = useSelector(
+    (state) => state.search
+  );
+  const [validation, setValidation] = useState({
+    error: false,
+    errorMessage: "",
+  });
 
-  const submitHandler = (values) => {
-    history.push(`/search/${values.text}`);
-  };
+  const autoSearchChangeHandler = (result) => {
+    if (result.LocalizedName) {
+      const cityData = {
+        key: result.Key,
+        name: result.LocalizedName,
+        ID: result.AdministrativeArea.ID,
+        country: result.Country.LocalizedName,
+      };
 
-  const autoSearchResultClickHandler = (data) => {
-    const cityData = {
-      key: data.Key,
-      name: data.LocalizedName,
-      ID: data.AdministrativeArea.ID,
-      country: data.Country.LocalizedName,
-    };
-
-    dispatch(setCurrentCity(cityData));
-    dispatch(closeAutoSearch());
-  };
-
-  const onBlurHandler = () => {
-    if (includeAutoSearch) {
-      dispatch(closeAutoSearch());
+      dispatch(setCurrentCity(cityData));
     }
   };
 
-  const onFocusHandler = async (text) => {
-    if (includeAutoSearch) {
+  const autoSearchKeyUpHandler = async (text, key) => {
+    //prevent up and down arrows keys
+    if (key !== 38 && key !== 40) {
       try {
         await validationSchema.validate({ text });
-        dispatch(openAutoSearch());
+        setValidation({ error: false, errorMessage: "" });
+        dispatch(searchCityAutoCompleteHandler(text));
       } catch (err) {
-        if (isAutoSearchOpen) {
-          dispatch(closeAutoSearch());
-        }
+        setValidation({ error: true, errorMessage: err.message });
       }
-    }
-  };
-
-  const onKeyUpHandler = (text) => {
-    if (includeAutoSearch) {
-      dispatch(searchCityAutoCompleteHandler(text));
     }
   };
 
   return (
     <SearchFrame>
-      <Formik
-        initialValues={initialFormValue}
-        onSubmit={submitHandler}
-        validationSchema={validationSchema}
-      >
-        {({ errors, touched, values }) => (
-          <SearchForm>
-            <Field
-              onBlur={onBlurHandler}
-              onFocus={() => onFocusHandler(values.text)}
-              onKeyUp={() => onKeyUpHandler(values.text)}
-              as={CustomTextField}
-              label="Search..."
-              name="text"
-              autoComplete="off"
-              error={errors.text && touched.text ? true : false}
-              helperText={errors.text && touched.text ? errors.text : null}
-            />
-
-            {includeAutoSearch && (
-              <SearchAutoCompleteFrame open={isAutoSearchOpen}>
-                <List>
-                  <List>
-                    {searchResults.length ? (
-                      searchResults.map((res) => (
-                        <ListItem
-                          key={res.Key}
-                          button
-                          onMouseDown={() => autoSearchResultClickHandler(res)}
-                        >
-                          <ListItemText
-                            primary={res.LocalizedName}
-                            secondary={`${
-                              res.Country && res.Country.LocalizedName
-                            }, ${
-                              res.AdministrativeArea &&
-                              res.AdministrativeArea.LocalizedName
-                            }`}
-                          />
-                        </ListItem>
-                      ))
-                    ) : (
-                      <ListItem>
-                        <ListItemText secondary="No results found." />
-                      </ListItem>
-                    )}
-                  </List>
-                </List>
-              </SearchAutoCompleteFrame>
-            )}
-
-            <PrimaryButton
-              type="submit"
-              variant="contained"
-              disableElevation
-              primary={true}
-            >
-              GO
-            </PrimaryButton>
-          </SearchForm>
+      <Autocomplete
+        open={isAutoSearchOpen}
+        onOpen={() => dispatch(openAutoSearch())}
+        onClose={() => dispatch(closeAutoSearch())}
+        onChange={(e, result) => autoSearchChangeHandler(result)}
+        getOptionSelected={(option, value) => option.Key === value.Key}
+        getOptionLabel={(option) =>
+          option.LocalizedName ? option.LocalizedName : option
+        }
+        options={searchResults}
+        disableClearable={true}
+        clearOnBlur={false}
+        freeSolo
+        renderInput={(params) => (
+          <CustomTextField
+            {...params}
+            onKeyUp={(e) => {
+              autoSearchKeyUpHandler(e.target.value, e.which);
+            }}
+            label="Search city..."
+            name="text"
+            autoComplete="off"
+            error={validation.error}
+            helperText={validation.errorMessage}
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: loading ? (
+                <>
+                  <CircularProgress color="secondary" size={20} />
+                  {params.InputProps.endAdornment}
+                </>
+              ) : null,
+            }}
+          />
         )}
-      </Formik>
+        renderOption={(option) => (
+          <div>
+            <span>{option.LocalizedName}</span>
+            <p>{`${option.Country && option.Country.LocalizedName}, ${
+              option.AdministrativeArea &&
+              option.AdministrativeArea.LocalizedName
+            }`}</p>
+          </div>
+        )}
+      />
     </SearchFrame>
   );
 }

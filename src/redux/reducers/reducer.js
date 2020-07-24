@@ -1,7 +1,7 @@
 import {
-  FETCH_STARTED,
-  FETCH_SUCCESS,
-  FETCH_FAILED,
+  FETCH_CURRENT_STARTED,
+  FETCH_CURRENT_SUCCESS,
+  FETCH_CURRENT_FAILED,
   SET_CURRENT_WEATHER,
   SET_FORECAST_WEATHER,
   SET_CURRENT_CITY,
@@ -17,6 +17,9 @@ import {
   CHANGE_UNIT,
   OPEN_AUTO_SEARCH,
   CLOSE_AUTO_SEARCH,
+  FETCH_SEARCH_STARTED,
+  FETCH_SEARCH_SUCCESS,
+  FETCH_SEARCH_FAILED,
 } from "../types/types";
 
 const initalState = {
@@ -25,15 +28,17 @@ const initalState = {
     name: "Tel Aviv",
     ID: "TA",
     country: "Israel",
+    loading: true,
+    error: false,
     currentWeather: {},
     forecastWeather: [],
   },
   favoriteCities: [],
-  searchResults: [],
-  isAutoSearchOpen: false,
-  fetch: {
-    loading: true,
+  search: {
+    searchResults: [],
+    loading: false,
     error: false,
+    isAutoSearchOpen: false,
   },
   theme: "light",
   unit: "c",
@@ -41,17 +46,17 @@ const initalState = {
 
 export const weatherReducer = (state = initalState, action) => {
   switch (action.type) {
-    case FETCH_STARTED:
-      return { ...state, fetch: { ...state.fetch, loading: true } };
-    case FETCH_SUCCESS:
+    case FETCH_CURRENT_STARTED:
+      return { ...state, currentCity: { ...state.currentCity, loading: true } };
+    case FETCH_CURRENT_SUCCESS:
       return {
         ...state,
-        fetch: { ...state.fetch, loading: false, error: false },
+        currentCity: { ...state.currentCity, loading: false, error: false },
       };
-    case FETCH_FAILED:
+    case FETCH_CURRENT_FAILED:
       return {
         ...state,
-        fetch: { ...state.fetch, loading: false, error: true },
+        currentCity: { ...state.currentCity, loading: false, error: true },
       };
     case SET_CURRENT_WEATHER:
       return {
@@ -71,7 +76,7 @@ export const weatherReducer = (state = initalState, action) => {
     case SET_SEARCH_RESULTS:
       return {
         ...state,
-        searchResults: action.payload,
+        search: { ...state.search, searchResults: action.payload },
       };
     case SET_ALL_FAVORITES:
       return {
@@ -147,12 +152,27 @@ export const weatherReducer = (state = initalState, action) => {
     case OPEN_AUTO_SEARCH:
       return {
         ...state,
-        isAutoSearchOpen: true,
+        search: { ...state.search, isAutoSearchOpen: true },
       };
     case CLOSE_AUTO_SEARCH:
       return {
         ...state,
-        isAutoSearchOpen: false,
+        search: { ...state.search, isAutoSearchOpen: false },
+      };
+    case FETCH_SEARCH_STARTED:
+      return {
+        ...state,
+        search: { ...state.search, loading: true },
+      };
+    case FETCH_SEARCH_SUCCESS:
+      return {
+        ...state,
+        search: { ...state.search, loading: false, error: false },
+      };
+    case FETCH_SEARCH_FAILED:
+      return {
+        ...state,
+        search: { ...state.search, loading: false, error: true },
       };
     default:
       return state;

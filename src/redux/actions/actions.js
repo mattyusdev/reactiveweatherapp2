@@ -1,7 +1,7 @@
 import {
-  FETCH_STARTED,
-  FETCH_SUCCESS,
-  FETCH_FAILED,
+  FETCH_CURRENT_STARTED,
+  FETCH_CURRENT_SUCCESS,
+  FETCH_CURRENT_FAILED,
   SET_CURRENT_WEATHER,
   SET_FORECAST_WEATHER,
   SET_CURRENT_CITY,
@@ -17,18 +17,21 @@ import {
   CHANGE_UNIT,
   OPEN_AUTO_SEARCH,
   CLOSE_AUTO_SEARCH,
+  FETCH_SEARCH_STARTED,
+  FETCH_SEARCH_SUCCESS,
+  FETCH_SEARCH_FAILED,
 } from "../types/types";
 
-export const fetchStarted = () => {
-  return { type: FETCH_STARTED };
+export const fetchCurrentStarted = () => {
+  return { type: FETCH_CURRENT_STARTED };
 };
 
-export const fetchSuccess = () => {
-  return { type: FETCH_SUCCESS };
+export const fetchCurrentSuccess = () => {
+  return { type: FETCH_CURRENT_SUCCESS };
 };
 
-export const fetchFailed = () => {
-  return { type: FETCH_FAILED };
+export const fetchCurrentFailed = () => {
+  return { type: FETCH_CURRENT_FAILED };
 };
 
 export const setCurrentWeather = (currentWeather) => {
@@ -100,4 +103,16 @@ export const closeAutoSearch = () => {
   return {
     type: CLOSE_AUTO_SEARCH,
   };
+};
+
+export const fetchSearchStarted = () => {
+  return { type: FETCH_SEARCH_STARTED };
+};
+
+export const fetchSearchSuccess = () => {
+  return { type: FETCH_SEARCH_SUCCESS };
+};
+
+export const fetchSearchFailed = () => {
+  return { type: FETCH_SEARCH_FAILED };
 };
