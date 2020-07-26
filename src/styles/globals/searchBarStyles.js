@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 import { device } from "../responsive";
-import { Form } from "formik";
 import { TextField } from "@material-ui/core";
 
 export const SearchFrame = styled.div`

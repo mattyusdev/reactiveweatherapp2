@@ -55,7 +55,7 @@ export const getCurrentCityData = (cityKey) => {
 
 let timeout = null;
 
-export const searchCityAutoCompleteHandler = (cityName) => {
+export const autoCompleteSearch = (cityName) => {
   return (dispatch) => {
     clearTimeout(timeout);
     timeout = setTimeout(async () => {

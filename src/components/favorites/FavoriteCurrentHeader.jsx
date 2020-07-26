@@ -32,7 +32,6 @@ export default function FavoriteCurrentHeader({ data, history }) {
   }, []);
 
   const viewFavoriteClickHandler = (cityData) => {
-    console.log(cityData);
     dispatch(setCurrentCity(cityData));
 
     history.push("/");

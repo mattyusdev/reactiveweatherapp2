@@ -5,29 +5,23 @@ import {
 } from "../styles/globals/searchBarStyles";
 
 import { useDispatch, useSelector } from "react-redux";
-import { searchCityAutoCompleteHandler } from "../redux/actions/asyncActions";
-import {
-  setCurrentCity,
-  closeAutoSearch,
-  openAutoSearch,
-} from "../redux/actions/actions";
+import { autoCompleteSearch } from "../redux/actions/asyncActions";
+import { setCurrentCity } from "../redux/actions/actions";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { validationSchema } from "../utils/validation";
 import { useState } from "react";
-import PuffLoader from "react-spinners/PuffLoader";
 import { CircularProgress } from "@material-ui/core";
 
 export default function SearchBar() {
   const dispatch = useDispatch();
-  const { searchResults, isAutoSearchOpen, loading } = useSelector(
-    (state) => state.search
-  );
+  const { searchResults, loading } = useSelector((state) => state.search);
   const [validation, setValidation] = useState({
     error: false,
     errorMessage: "",
   });
+  const [isAutoSearchOpen, setIsAutoSearchOpen] = useState(false);
 
-  const autoSearchChangeHandler = (result) => {
+  const autoCompleteSearchChangeHandler = (result) => {
     if (result.LocalizedName) {
       const cityData = {
         key: result.Key,
@@ -40,13 +34,12 @@ export default function SearchBar() {
     }
   };
 
-  const autoSearchKeyUpHandler = async (text, key) => {
-    //prevent up and down arrows keys
-    if (key !== 38 && key !== 40) {
+  const autoCompleteSearchKeyUpHandler = async (text, key) => {
+    if (key !== 38 && key !== 40 && key !== 13) {
       try {
         await validationSchema.validate({ text });
         setValidation({ error: false, errorMessage: "" });
-        dispatch(searchCityAutoCompleteHandler(text));
+        dispatch(autoCompleteSearch(text));
       } catch (err) {
         setValidation({ error: true, errorMessage: err.message });
       }
@@ -57,9 +50,9 @@ export default function SearchBar() {
     <SearchFrame>
       <Autocomplete
         open={isAutoSearchOpen}
-        onOpen={() => dispatch(openAutoSearch())}
-        onClose={() => dispatch(closeAutoSearch())}
-        onChange={(e, result) => autoSearchChangeHandler(result)}
+        onOpen={() => setIsAutoSearchOpen(true)}
+        onClose={() => setIsAutoSearchOpen(false)}
+        onChange={(e, result) => autoCompleteSearchChangeHandler(result)}
         getOptionSelected={(option, value) => option.Key === value.Key}
         getOptionLabel={(option) =>
           option.LocalizedName ? option.LocalizedName : option
@@ -72,7 +65,7 @@ export default function SearchBar() {
           <CustomTextField
             {...params}
             onKeyUp={(e) => {
-              autoSearchKeyUpHandler(e.target.value, e.which);
+              autoCompleteSearchKeyUpHandler(e.target.value, e.which);
             }}
             label="Search city..."
             name="text"

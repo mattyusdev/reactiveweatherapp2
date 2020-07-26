@@ -15,8 +15,6 @@ import {
   FETCH_FAVORITE_FAILED,
   CHANGE_THEME,
   CHANGE_UNIT,
-  OPEN_AUTO_SEARCH,
-  CLOSE_AUTO_SEARCH,
   FETCH_SEARCH_STARTED,
   FETCH_SEARCH_SUCCESS,
   FETCH_SEARCH_FAILED,
@@ -148,16 +146,6 @@ export const weatherReducer = (state = initalState, action) => {
       return {
         ...state,
         unit: state.unit === "c" ? "f" : "c",
-      };
-    case OPEN_AUTO_SEARCH:
-      return {
-        ...state,
-        search: { ...state.search, isAutoSearchOpen: true },
-      };
-    case CLOSE_AUTO_SEARCH:
-      return {
-        ...state,
-        search: { ...state.search, isAutoSearchOpen: false },
       };
     case FETCH_SEARCH_STARTED:
       return {
