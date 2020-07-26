@@ -11,6 +11,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { validationSchema } from "../utils/validation";
 import { useState } from "react";
 import { CircularProgress } from "@material-ui/core";
+import { isAllowedKey } from "../utils/functions/isAllowedKey";
 
 export default function SearchBar() {
   const dispatch = useDispatch();
@@ -35,7 +36,7 @@ export default function SearchBar() {
   };
 
   const autoCompleteSearchKeyUpHandler = async (text, key) => {
-    if (key !== 38 && key !== 40 && key !== 13) {
+    if (isAllowedKey(key)) {
       try {
         await validationSchema.validate({ text });
         setValidation({ error: false, errorMessage: "" });

@@ -26,13 +26,17 @@ export const getCurrentCityData = (cityKey) => {
   return async (dispatch) => {
     dispatch(fetchCurrentStarted());
 
+    // setTimeout(async () => {
     try {
-      const getCurrentData = axios.get(
-        `${apiRoot}/currentconditions/v1/${cityKey}?apikey=${apiKey}&metric=true`
-      );
-      const getForecastData = axios.get(
-        `${apiRoot}/forecasts/v1/daily/5day/${cityKey}?apikey=${apiKey}&metric=true`
-      );
+      // const getCurrentData = axios.get(
+      //   `${apiRoot}/currentconditions/v1/${cityKey}?apikey=${apiKey}&metric=true`
+      // );
+      // const getForecastData = axios.get(
+      //   `${apiRoot}/forecasts/v1/daily/5day/${cityKey}?apikey=${apiKey}&metric=true`
+      // );
+
+      const getCurrentData = axios.get(`${apiLocal}/telavivCurrent.json`);
+      const getForecastData = axios.get(`${apiLocal}/telavivForecast.json`);
 
       const [currentResponse, forecastResponse] = await Promise.all([
         getCurrentData,
@@ -45,6 +49,7 @@ export const getCurrentCityData = (cityKey) => {
     } catch (err) {
       dispatch(fetchCurrentFailed());
     }
+    // }, 1000);
   };
 };
 
@@ -56,9 +61,11 @@ export const autoCompleteSearch = (cityName) => {
     timeout = setTimeout(async () => {
       dispatch(fetchSearchStarted());
       try {
-        const searchResponse = await axios.get(
-          `${apiRoot}/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${cityName}`
-        );
+        // const searchResponse = await axios.get(
+        //   `${apiRoot}/locations/v1/cities/autocomplete?apikey=${apiKey}&q=${cityName}`
+        // );
+
+        const searchResponse = await axios.get(`${apiLocal}/search.json`);
 
         dispatch(setSearchResults(searchResponse.data));
         dispatch(fetchSearchSuccess());
@@ -74,8 +81,12 @@ export const getCurrentFavoriteCityData = (cityKey) => {
     dispatch(fetchFavoriteStarted(cityKey));
 
     try {
+      // const currentResponse = await axios.get(
+      //   `${apiRoot}/currentconditions/v1/${cityKey}?apikey=${apiKey}&metric=true`
+      // );
+
       const currentResponse = await axios.get(
-        `${apiRoot}/currentconditions/v1/${cityKey}?apikey=${apiKey}&metric=true`
+        `${apiLocal}/telavivCurrent.json`
       );
 
       dispatch(setFavoriteCurrentWeather(cityKey, currentResponse.data[0]));
@@ -95,8 +106,12 @@ export const getCurrentLocation = () => {
         try {
           const { latitude, longitude } = result.coords;
 
+          // const locationResponse = await axios.get(
+          //   `${apiRoot}/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${latitude},${longitude}`
+          // );
+
           const locationResponse = await axios.get(
-            `${apiRoot}/locations/v1/cities/geoposition/search?apikey=${apiKey}&q=${latitude},${longitude}`
+            `${apiLocal}/currentLocation.json`
           );
 
           const cityData = {
